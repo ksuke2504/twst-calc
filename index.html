@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ツイステ推しバースデー魔法石計算機</title>
+    <!-- ファビコン（🔑） -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔑</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="card">
+        <h1>🔑ツイステ推しバースデー魔法石計算機🔑</h1>
+        
+        <div class="container">
+            <!-- 左側：入力パネル -->
+            <div class="left-panel">
+                <!-- 1. 現在の所持アイテム -->
+                <fieldset class="input-section">
+                    <legend>現在の所持アイテム</legend>
+                    <div class="input-group">
+                        <label for="currentStones">魔法石:</label>
+                        <input type="number" id="currentStones" placeholder="0" min="0"> 個
+                    </div>
+                    <div class="input-group">
+                        <label for="currentKeys10">10連キー:</label>
+                        <input type="number" id="currentKeys10" placeholder="0" min="0"> 本
+                    </div>
+                    <div class="input-group">
+                        <label for="currentKeysSingle">マジカルキー(単発):</label>
+                        <input type="number" id="currentKeysSingle" placeholder="0" min="0"> 本
+                    </div>
+                </fieldset>
+
+                <!-- 2. 推し・条件設定 -->
+                <fieldset class="input-section">
+                    <legend>条件設定</legend>
+                    <div class="input-group">
+                        <label for="targetPulls">目標ガチャ回数</label>
+                        <input type="number" id="targetPulls" value="100" min="1"> 回 
+                    </div>
+                    <div class="input-group">
+                        <label for="dormSelect">寮を選択:</label>
+                        <select id="dormSelect">
+                            <option value="">-- 寮を選択してね --</option>
+                            <option value="heartslabyul">ハーツラビュル寮</option>
+                            <option value="savanaclaw">サバナクロー寮</option>
+                            <option value="octavinelle">オクタヴィネル寮</option>
+                            <option value="scarabia">スカラビア寮</option>
+                            <option value="pomefiore">ポムフィオーレ寮</option>
+                            <option value="ignihyde">イグニハイド寮</option>
+                            <option value="diasomnia">ディアソムニア寮</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="charaSelect">推しのキャラクター:</label>
+                        <select id="charaSelect" disabled>
+                            <option value="">-- まずは寮を選んでね --</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="birthday">推しのバースデー:</label>
+                        <input type="date" id="birthday" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label for="myBirthday">自分の誕生日:</label>
+                        <input type="date" id="myBirthday">
+                    </div>
+                </fieldset>
+
+                <!-- 3. パスの獲得石設定 -->
+                <fieldset class="input-section">
+                    <legend>パス設定</legend>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="hasMonthlyPass">
+                            マンスリーパス購入（購入時有償59個 + 毎日無償5個）
+                        </label>
+                    </div>
+                </fieldset>
+
+                <!-- 計算ボタン -->
+                <button id="calcBtn">計算する！</button>
+            </div>
+
+            <!-- 右側：結果表示パネル -->
+            <div class="right-panel">
+                <div id="result" class="result-area">
+                    条件を入力して「計算する！」を押してね！
+                </div>
+            </div>
+        </div>
+
+        <!-- 👇 ここからフッター注意書きを追加！ -->
+        <footer class="footer-notice">
+            <div class="notice-block">
+                <h3>■ このアプリについて</h3>
+                <p>本サイトは「ツイステッドワンダーランド」で推しの誕生日までに必要な魔法石を計算するサイトです。あくまで参考値なので、実際に必要な数・貯まる数・最短の課金ルートと異なる場合があります。ご理解の上、ご活用ください。<br>2026年8月時点の情報で作成しています。</p>
+            </div>
+            <div class="notice-block">
+                <h3>■ 免責事項</h3>
+                <p>本サイトは非公式のファンメイドツールであり、公式・著作権元とは一切関係ありません。</p>
+            </div>
+            
+            <!-- 👇 ここを追加！ -->
+            <div class="notice-block">
+                <h3>■ 制作者・お問い合わせ</h3>
+                <p>
+                    不具合報告やご意見は以下までご連絡ください。<br>
+                    👉 <a href="https://x.com/ksukeoekaki
+" target="_blank" rel="noopener noreferrer" style="color: #cbb26a;">管理者のX</a>
+                </p>
+            </div>
+        </footer>
+        <!-- 👆 ここまで -->
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
