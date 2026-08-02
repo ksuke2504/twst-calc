@@ -147,7 +147,6 @@ function calculateBestPacks(neededStones, diffDays) {
 
 // 計算処理
 document.getElementById('calcBtn').addEventListener('click', function() {
-    // 未入力（空欄）の場合はデフォルト値（0や100）を採用する設定
     const currentStones = Number(document.getElementById('currentStones').value) || 0;
     const currentKeys10 = Number(document.getElementById('currentKeys10').value) || 0;
     const currentKeysSingle = Number(document.getElementById('currentKeysSingle').value) || 0;
@@ -177,7 +176,9 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const diffTime = targetDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
+    // --- 各種配布・イベントのカウント ---
     let weeklyBonusCount = 0;
+    let shopExchangeCount = 0; // 毎月1日のショップ更新回数
     let charaBirthdayKeys = 0;
     let myBirthdayKeys = 0;
 
@@ -191,16 +192,34 @@ document.getElementById('calcBtn').addEventListener('click', function() {
         }
     }
 
+    // 1日ずつループしてカウント
     let checkDate = new Date(today);
     while (checkDate < targetDate) {
         checkDate.setDate(checkDate.getDate() + 1);
         const mmdd = `${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
 
-        if (checkDate.getDay() === 0) weeklyBonusCount++;
-        if (allBirthdays.includes(mmdd)) charaBirthdayKeys++;
-        if (myBirthdayDate && checkDate.getTime() === myBirthdayDate.getTime()) myBirthdayKeys++;
+        // 日曜日（ウィークリーミッション達成60個）
+        if (checkDate.getDay() === 0) {
+            weeklyBonusCount++;
+        }
+
+        // 毎月1日（ショップの10連鍵交換更新）
+        if (checkDate.getDate() === 1) {
+            shopExchangeCount++;
+        }
+
+        // キャラ誕生日（10連鍵1本）
+        if (allBirthdays.includes(mmdd)) {
+            charaBirthdayKeys++;
+        }
+
+        // 自分の誕生日（10連鍵1本）
+        if (myBirthdayDate && checkDate.getTime() === myBirthdayDate.getTime()) {
+            myBirthdayKeys++;
+        }
     }
 
+    // --- 石・鍵の計算 ---
     const weeklyEarnedStones = weeklyBonusCount * 60;
     
     let passEarnedStones = 0;
@@ -212,13 +231,23 @@ document.getElementById('calcBtn').addEventListener('click', function() {
 
     const oshiBirthdayKey = 1;
 
-    const totalEarnedStones = weeklyEarnedStones + passEarnedStones;
-    const totalEarnedKeys10 = charaBirthdayKeys + myBirthdayKeys + oshiBirthdayKey;
+    // ショップ交換による石の消費と鍵の増加
+    const shopUsedStones = shopExchangeCount * 250; // 消費する石
+    const shopEarnedKeys10 = shopExchangeCount * 1;  // 増える10連鍵
 
-    const finalStones = currentStones + totalEarnedStones;
+    // 獲得する石の合計（獲得分からショップ消費分を引く）
+    const grossEarnedStones = weeklyEarnedStones + passEarnedStones;
+    const netEarnedStones = grossEarnedStones - shopUsedStones;
+    
+    // 獲得する10連鍵の合計
+    const totalEarnedKeys10 = charaBirthdayKeys + myBirthdayKeys + oshiBirthdayKey + shopEarnedKeys10;
+
+    // 最終的なトータル所持予測
+    const finalStones = currentStones + netEarnedStones;
     const finalKeys10 = currentKeys10 + totalEarnedKeys10;
     const finalKeysSingle = currentKeysSingle;
 
+    // ガチャ回数換算
     const stonesToPulls = Math.floor(finalStones / 30);
     const keys10ToPulls = finalKeys10 * 10;
     const keysSingleToPulls = finalKeysSingle;
@@ -226,6 +255,7 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const totalPulls = stonesToPulls + keys10ToPulls + keysSingleToPulls;
     const pullsDiff = totalPulls - targetPulls;
 
+    // 課金ルート計算（不足時）
     let packProposalHTML = "";
     if (pullsDiff < 0) {
         const neededPulls = Math.abs(pullsDiff);
@@ -245,13 +275,14 @@ document.getElementById('calcBtn').addEventListener('click', function() {
         }
     }
 
+    // 結果の出力
     resultDiv.innerHTML = `
         推しのバースデーまであと <b>${diffDays}日</b>！<br><br>
         <b>【期間中に獲得できる予測】</b><br>
-        ・魔法石：<b>${totalEarnedStones.toLocaleString()}個</b><br>
-        <small>（ウィークリー:${weeklyEarnedStones}${hasMonthlyPass ? ' / パス:' + passEarnedStones : ''}）</small><br>
+        ・魔法石：<b>${netEarnedStones.toLocaleString()}個</b><br>
+        <small>（ミッション:${weeklyEarnedStones}${hasMonthlyPass ? ' / パス:' + passEarnedStones : ''}${shopExchangeCount > 0 ? ' / ショップ交換:-' + shopUsedStones : ''}）</small><br>
         ・10連キー：<b>${totalEarnedKeys10}本</b><br>
-        <small>（他キャラ:${charaBirthdayKeys}本 / 自誕生日:${myBirthdayKeys}本 / <b>推し当日:1本</b>）</small><br><br>
+        <small>（他キャラ:${charaBirthdayKeys}本 / 自誕生日:${myBirthdayKeys}本 / 推し当日:1本${shopExchangeCount > 0 ? ' / ショップ交換:' + shopEarnedKeys10 + '本' : ''}）</small><br><br>
 
         <b>【バースデー当日の予想総所持】</b><br>
         ・魔法石：<b>${finalStones.toLocaleString()}個</b><br>
