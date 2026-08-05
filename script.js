@@ -245,10 +245,10 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const totalEarnedKeys10 = charaBirthdayKeys + myBirthdayKeys + oshiBirthdayKey + shopEarnedKeys10;
     const totalEarnedKeysSingle = shopEarnedKeysSingle;
 
-    // 最終的なトータル所持予測
+    // 最終的なトータル所持予測（初期所持数 ＋ 期間中獲得数）
     const finalStones = currentStones + netEarnedStones;
     const finalKeys10 = currentKeys10 + totalEarnedKeys10;
-    const finalKeysSingle = currentKeysSingle + totalEarnedKeysSingle;
+    const finalKeysSingle = currentKeysSingle + totalEarnedKeysSingle; // ←ここを確実に合算！
 
     // ガチャ回数換算
     const stonesToPulls = Math.floor(finalStones / 30);
