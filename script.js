@@ -203,7 +203,7 @@ document.getElementById('calcBtn').addEventListener('click', function() {
             weeklyBonusCount++;
         }
 
-        // 毎月1日（ショップの10連鍵交換更新）
+        // 毎月1日（ショップの鍵交換更新）
         if (checkDate.getDate() === 1) {
             shopExchangeCount++;
         }
@@ -232,20 +232,23 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const oshiBirthdayKey = 1;
 
     // ショップ交換による石の消費と鍵の増加
-    const shopUsedStones = shopExchangeCount * 250; // 消費する石
-    const shopEarnedKeys10 = shopExchangeCount * 1;  // 増える10連鍵
+    // 毎月1日：10連鍵(石250個) + 単発キー3本(石50個) ＝ 合計 石300個消費
+    const shopUsedStones = shopExchangeCount * 300;     // 消費する石（250 + 50）
+    const shopEarnedKeys10 = shopExchangeCount * 1;      // 増える10連鍵
+    const shopEarnedKeysSingle = shopExchangeCount * 3;  // 増える単発キー
 
     // 獲得する石の合計（獲得分からショップ消費分を引く）
     const grossEarnedStones = weeklyEarnedStones + passEarnedStones;
     const netEarnedStones = grossEarnedStones - shopUsedStones;
     
-    // 獲得する10連鍵の合計
+    // 獲得する10連鍵・単発キーの合計
     const totalEarnedKeys10 = charaBirthdayKeys + myBirthdayKeys + oshiBirthdayKey + shopEarnedKeys10;
+    const totalEarnedKeysSingle = shopEarnedKeysSingle;
 
     // 最終的なトータル所持予測
     const finalStones = currentStones + netEarnedStones;
     const finalKeys10 = currentKeys10 + totalEarnedKeys10;
-    const finalKeysSingle = currentKeysSingle;
+    const finalKeysSingle = currentKeysSingle + totalEarnedKeysSingle;
 
     // ガチャ回数換算
     const stonesToPulls = Math.floor(finalStones / 30);
@@ -282,7 +285,9 @@ document.getElementById('calcBtn').addEventListener('click', function() {
         ・魔法石：<b>${netEarnedStones.toLocaleString()}個</b><br>
         <small>（ミッション:${weeklyEarnedStones}${hasMonthlyPass ? ' / パス:' + passEarnedStones : ''}${shopExchangeCount > 0 ? ' / ショップ交換:-' + shopUsedStones : ''}）</small><br>
         ・10連キー：<b>${totalEarnedKeys10}本</b><br>
-        <small>（他キャラ:${charaBirthdayKeys}本 / 自誕生日:${myBirthdayKeys}本 / 推し当日:1本${shopExchangeCount > 0 ? ' / ショップ交換:' + shopEarnedKeys10 + '本' : ''}）</small><br><br>
+        <small>（他キャラ:${charaBirthdayKeys}本 / 自誕生日:${myBirthdayKeys}本 / 推し当日:1本${shopExchangeCount > 0 ? ' / ショップ交換:' + shopEarnedKeys10 + '本' : ''}）</small><br>
+        ・単発キー：<b>${totalEarnedKeysSingle}本</b><br>
+        <small>（${shopExchangeCount > 0 ? 'ショップ交換:' + shopEarnedKeysSingle + '本' : '期間中の獲得なし'}）</small><br><br>
 
         <b>【バースデー当日の予想総所持】</b><br>
         ・魔法石：<b>${finalStones.toLocaleString()}個</b><br>
