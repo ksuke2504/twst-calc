@@ -140,3 +140,27 @@ button:hover {
     border-radius: 6px;
     font-size: 13px;
 }
+
+/* --- ショップ交換の注意書きスタイル --- */
+.shop-notice {
+    display: flex;
+    align-items: flex-start;
+    background-color: #fcfaf5;
+    border: 1px solid #eaddb3;
+    border-left: 5px solid #cbb26a;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #444;
+    line-height: 1.5;
+}
+
+.shop-notice .notice-icon {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.shop-notice b {
+    color: #2b2a33;
+}
