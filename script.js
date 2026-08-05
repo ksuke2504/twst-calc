@@ -232,7 +232,6 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const oshiBirthdayKey = 1;
 
     // ショップ交換による石の消費と鍵の増加
-    // 毎月1日：10連鍵(石250個) + 単発キー3本(石50個) ＝ 合計 石300個消費
     const shopUsedStones = shopExchangeCount * 300;     // 消費する石（250 + 50）
     const shopEarnedKeys10 = shopExchangeCount * 1;      // 増える10連鍵
     const shopEarnedKeysSingle = shopExchangeCount * 3;  // 増える単発キー
@@ -241,14 +240,22 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const grossEarnedStones = weeklyEarnedStones + passEarnedStones;
     const netEarnedStones = grossEarnedStones - shopUsedStones;
     
-    // 獲得する10連鍵・単発キーの合計
-    const totalEarnedKeys10 = charaBirthdayKeys + myBirthdayKeys + oshiBirthdayKey + shopEarnedKeys10;
+    // 期間中に新しく「獲得できる」各種アイテムの合計
+    const totalEarnedKeys10Raw = charaBirthdayKeys + myBirthdayKeys + oshiBirthdayKey + shopEarnedKeys10;
     const totalEarnedKeysSingle = shopEarnedKeysSingle;
 
-    // 最終的なトータル所持予測（初期所持数 ＋ 期間中獲得数）
+    // --- 単発キー10本 ➔ 10連キー1本 への繰り上げ計算 ---
+    // (初期所持 + 期間中獲得) の総単発キー数を計算
+    const rawTotalSingleKeys = currentKeysSingle + totalEarnedKeysSingle;
+    
+    // 10本で割り切れる分を10連キーへ繰り上げ
+    const convertedKeys10FromSingle = Math.floor(rawTotalSingleKeys / 10); // 繰り上がった10連キー本数
+    const remainingSingleKeys = rawTotalSingleKeys % 10;                  // 端数として残る単発キー本数
+
+    // 最終的な予想所持数
     const finalStones = currentStones + netEarnedStones;
-    const finalKeys10 = currentKeys10 + totalEarnedKeys10;
-    const finalKeysSingle = currentKeysSingle + totalEarnedKeysSingle; // ←ここを確実に合算！
+    const finalKeys10 = currentKeys10 + totalEarnedKeys10Raw + convertedKeys10FromSingle;
+    const finalKeysSingle = remainingSingleKeys;
 
     // ガチャ回数換算
     const stonesToPulls = Math.floor(finalStones / 30);
@@ -284,14 +291,15 @@ document.getElementById('calcBtn').addEventListener('click', function() {
         <b>【期間中に獲得できる予測】</b><br>
         ・魔法石：<b>${netEarnedStones.toLocaleString()}個</b><br>
         <small>（ミッション:${weeklyEarnedStones}${hasMonthlyPass ? ' / パス:' + passEarnedStones : ''}${shopExchangeCount > 0 ? ' / ショップ交換:-' + shopUsedStones : ''}）</small><br>
-        ・10連キー：<b>${totalEarnedKeys10}本</b><br>
+        ・10連キー：<b>${totalEarnedKeys10Raw}本</b><br>
         <small>（他キャラ:${charaBirthdayKeys}本 / 自誕生日:${myBirthdayKeys}本 / 推し当日:1本${shopExchangeCount > 0 ? ' / ショップ交換:' + shopEarnedKeys10 + '本' : ''}）</small><br>
         ・単発キー：<b>${totalEarnedKeysSingle}本</b><br>
         <small>（${shopExchangeCount > 0 ? 'ショップ交換:' + shopEarnedKeysSingle + '本' : '期間中の獲得なし'}）</small><br><br>
 
         <b>【バースデー当日の予想総所持】</b><br>
         ・魔法石：<b>${finalStones.toLocaleString()}個</b><br>
-        ・10連キー：<b>${finalKeys10}本</b> / 単発キー：<b>${finalKeysSingle}本</b><br>
+        ・10連キー：<b>${finalKeys10}本</b> ${convertedKeys10FromSingle > 0 ? `<small style="color:#666;">(単発キーから+${convertedKeys10FromSingle}本換算)</small>` : ''}<br>
+        ・単発キー：<b>${finalKeysSingle}本</b><br>
         👉 <b>合計：約 ${totalPulls} 回分</b> のガチャが可能！<br><br>
 
         <b>【目標：${targetPulls}回 に対して】</b><br>
